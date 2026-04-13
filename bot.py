@@ -1,11 +1,8 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-TOKEN = "8686825014:AAFHu3EsjPYfjMll7mjIWQhQSqlOFu1s2Gc"  # yoki Render ENV dan olasan
+TOKEN = "YOUR_TOKEN_HERE"
 ADMIN_ID = 5517115287
-
-user_state = {}
-orders = {}
 
 menu = ReplyKeyboardMarkup(
     [["🎨 DIZAYN XIZMATLARI", "📁 PORTFOLIO"],
@@ -13,85 +10,16 @@ menu = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-services_menu = ReplyKeyboardMarkup(
-    [
-        ["LOGO", "BRENDING LOGO"],
-        ["PREVYU", "BANNER"],
-        ["⬅️ ORQAGA"]
-    ],
-    resize_keyboard=True
-)
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "🤖 Assalomu alaykum!\nBEGZOD PRODUCTION botiga xush kelibsiz!",
-        reply_markup=menu
-    )
+    await update.message.reply_text("Bot ishlayapti 🚀", reply_markup=menu)
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
-    chat_id = update.message.chat_id
-
-    if text == "🎨 DIZAYN XIZMATLARI":
-        await update.message.reply_text("Xizmatlar:", reply_markup=services_menu)
-        return
-
-    if text == "📁 PORTFOLIO":
-        await update.message.reply_text("📁 https://t.me/begzod_production")
-        return
-
-    if text == "LOGO":
-        await update.message.reply_text("🎨 Logo: $3 dan")
-        return
-
-    if text == "BRENDING LOGO":
-        await update.message.reply_text("🏷 Branding: $10-$50")
-        return
-
-    if text == "PREVYU":
-        await update.message.reply_text("📦 Prevyu: $4-$10")
-        return
-
-    if text == "BANNER":
-        await update.message.reply_text("🖼 Banner: $4-$10")
-        return
-
-    if text == "⬅️ ORQAGA":
-        await update.message.reply_text("Asosiy menyu", reply_markup=menu)
-        return
-
-    if text == "📩 BUYURTMA BERISH":
-        order_id = str(chat_id)[-4:]
-        user_state[chat_id] = order_id
-        orders[order_id] = "NEW"
-
-        await update.message.reply_text(
-            f"📩 Buyurtma ID: {order_id}\nNimani xohlaysiz yozing:"
-        )
-        return
-
-    if chat_id in user_state:
-        order_id = user_state[chat_id]
-        orders[order_id] = text
-
-        await update.message.reply_text("✅ Buyurtma qabul qilindi!")
-
-        await context.bot.send_message(
-            chat_id=ADMIN_ID,
-            text=f"📩 YANGI BUYURTMA\nID: {order_id}\n\n{text}"
-        )
-
-        del user_state[chat_id]
-        return
-
-    await update.message.reply_text("🤖 Men sizni tushunmadim")
-
+async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(update.message.text)
 
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle))
 
-print("BOT STARTED 🚀")
-
+print("BOT STARTED")
 app.run_polling()
