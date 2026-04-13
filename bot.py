@@ -1,20 +1,18 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-TOKEN = "8686825014:AAFHu3EsjPYfjMll7mjIWQhQSqlOFu1s2Gc"
+TOKEN = "8686825014:AAFHu3EsjPYfjMll7mjIWQhQSqlOFu1s2Gc"  # yoki Render ENV dan olasan
 ADMIN_ID = 5517115287
 
 user_state = {}
 orders = {}
 
-# MAIN MENU
 menu = ReplyKeyboardMarkup(
     [["🎨 DIZAYN XIZMATLARI", "📁 PORTFOLIO"],
      ["📩 BUYURTMA BERISH"]],
     resize_keyboard=True
 )
 
-# SERVICES MENU
 services_menu = ReplyKeyboardMarkup(
     [
         ["LOGO", "BRENDING LOGO"],
@@ -24,19 +22,16 @@ services_menu = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-# START
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🤖 Assalomu alaykum!\nBEGZOD PRODUCTION botiga xush kelibsiz!",
         reply_markup=menu
     )
 
-# MESSAGE HANDLER
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
     chat_id = update.message.chat_id
 
-    # MENU
     if text == "🎨 DIZAYN XIZMATLARI":
         await update.message.reply_text("Xizmatlar:", reply_markup=services_menu)
         return
@@ -65,7 +60,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Asosiy menyu", reply_markup=menu)
         return
 
-    # ORDER SYSTEM
     if text == "📩 BUYURTMA BERISH":
         order_id = str(chat_id)[-4:]
         user_state[chat_id] = order_id
@@ -90,10 +84,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del user_state[chat_id]
         return
 
-    # DEFAULT
     await update.message.reply_text("🤖 Men sizni tushunmadim")
 
-# APP
+
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
